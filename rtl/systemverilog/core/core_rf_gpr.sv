@@ -8,12 +8,14 @@
  * TODO
  */
 
+`include "i2d_core_defines.sv"
+
 module core_rf_gpr(
 	input clk,
-	input [3:0] rega_addr, input [3:0] regb_addr, output [31:0] regb_data,
+	input [3:0] rega_addr, input [3:0] regb_addr, output [31:0] rega_data,
 	output [31:0] regb_data,
 	input wb, input [3:0] wb_addr, input [31:0] wb_data,
-	input [3:0] regm_addr, output [31:0] regm_data;
+	input [3:0] regm_addr, output [31:0] regm_data
 );
 logic	[31:0]	regmem[15];
 

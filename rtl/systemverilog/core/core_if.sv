@@ -15,7 +15,7 @@ module core_if(
 	input clk, rst,
 	wishbone.pl_master bus,
 	input if_halt, set_pc, input [31:0] new_pc,
-	output [31:0] if_pc, output [31:0] if_instr, output if_busy
+	output [31:0] if_pc, output instr_t if_instr, output if_busy
 );
 logic	[31:0]	pc;
 logic	[31:0]	last_pc;
@@ -47,4 +47,4 @@ begin
 		pc <= pc;
 end
 
-
+endmodule

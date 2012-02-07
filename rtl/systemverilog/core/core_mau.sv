@@ -13,13 +13,13 @@
 module core_mau(
 	input clk, rst,
 	wishbone.pl_master bus,
-	input instruction if_instr, input [31:0] regb_data, input [31:0] imm,
+	input instr_t if_instr, input [31:0] regb_data, input [31:0] imm,
 	input [31:0] rega_data,
-	output mau_busy, output [3:0] regm_addr, input [31:0] regm_data;
+	output mau_busy, output [3:0] regm_addr, input [31:0] regm_data,
 	output [31:0] mau_data
 );
-mau_op	mau_op;
-mau_sel	mau_sel;
+mau_op_t	mau_op;
+mau_sel_t	mau_sel;
 logic last_stb, last_stb2;
 
 always_comb
@@ -29,13 +29,13 @@ begin
 		OPCODE_ST: mau_op = MAUOP_W;
 		default: mau_op = MAUOP_NONE;
 	endcase
-	mau_sel = if_instr.opcode[1:0];
+	mau_sel = mau_sel_t'(if_instr.opcode[1:0]);
 end
 
 // cyc
 always_ff @(posedge clk)
 begin
-	priority if ((mau_op == MAUOP_R) || (mau_op == MAUOP_W))
+	if ((mau_op == MAUOP_R) || (mau_op == MAUOP_W))
 		bus.cyc = 1;
 	else if ((last_stb2 == 0) && bus.ack)
 		bus.cyc = 0;
@@ -48,6 +48,11 @@ begin
 		if (mau_op == MAUOP_W)
 			bus.we = 1;
 		else	bus.we = 0;
+		unique case(mau_sel)
+			MAUSEL_B: bus.sel = 4'b0001;
+			MAUSEL_W: bus.sel = 4'b0011;
+			MAUSEL_D: bus.sel = 4'b1111;
+		endcase
 	end
 	else
 		bus.stb = 0;
@@ -65,7 +70,7 @@ end
 
 always_ff @(posedge clk)
 begin
-	priority if (bus.stb)
+	if (bus.stb)
 		last_stb = bus.stb;
 	else if (last_stb2)
 		last_stb = last_stb2;
@@ -74,11 +79,11 @@ begin
 		last_stb2 = 1;
 	else
 		last_stb2 = 0;
-
+	
 	if (last_stb && !bus.ack)
-		if_halt = 1;
+		mau_busy = 1;
 	else
-		if_halt = 0;
+		mau_busy = 0;
 end
 
 // always output if mau_op = MAUOP_R, other component may not accept this data
@@ -87,3 +92,5 @@ begin
 	if (bus.ack)
 		mau_data = bus.dat_so;
 end
+
+endmodule

@@ -47,8 +47,19 @@ OPCODE_RET	= 6'd26,
 OPCODE_RFE	= 6'd27,
 OPCODE_MSR	= 6'd28,
 OPCODE_MRS	= 6'd29
-} opcode;
+} opcode_t;
 
+typedef struct packed {
+	opcode_t opcode;
+	logic [3:0] regd_cond_sel;
+	logic [3:0] rega;
+	logic [3:0] regb_dummy;
+	logic	i;
+	logic	s;
+	logic	[11:0] imm;
+} instr_t;
+
+//branch cond
 typedef enum logic [3:0] {
 COND_B		= 4'd1,
 COND_BE		= 4'd2,
@@ -57,7 +68,7 @@ COND_BG		= 4'd4,
 COND_BL		= 4'd5,
 COND_BA		= 4'd6,
 COND_BB		= 4'd7
-} branch_cond;
+} cond_t;
 
 //i2d regfile
 typedef enum logic [3:0] {
@@ -69,18 +80,18 @@ typedef enum logic [3:0] {
 //oprand mux
 typedef enum logic [3:0] {
 //OPMUX_A_NONE	= 0,
-OPMUX_A_RA	= 1,
-OPMUX_A_PC	= 2,
-OPMUX_A_WB	= 3
-} opmux_a;
+OPMUX_A_RA	= 4'd1,
+OPMUX_A_PC	= 4'd2,
+OPMUX_A_WB	= 4'd3
+} opmux_a_t;
 
 typedef enum logic [3:0] {
 //OPMUX_B_NONE	= 0,
-OPMUX_B_RB	= 1,
-OPMUX_B_PC	= 2,
-OPMUX_B_IMM	= 3,
-OPMUX_B_WB	= 4
-} opmux_b;
+OPMUX_B_RB	= 4'd1,
+OPMUX_B_PC	= 4'd2,
+OPMUX_B_IMM	= 4'd3,
+OPMUX_B_WB	= 4'd4
+} opmux_b_t;
 
 /*
 //alu op
@@ -112,22 +123,22 @@ typedef struct packed {
 	logic	cf;
 	logic	of;
 	logic	zf;
-} sr;
+} sr_t;
 
 
 //mau op
 typedef enum logic [1:0] {
-MAUOP_NONE	= 0,
-MAUOP_R		= 1,
-MAUOP_W		= 2
-} mau_op;
+MAUOP_NONE	= 2'd0,
+MAUOP_R		= 2'd1,
+MAUOP_W		= 2'd2
+} mau_op_t;
 
 //mau sel
 typedef enum logic [1:0] {
-MAUSEL_NONE	= 0,
-MAUSEL_B	= 1,
-MAUSEL_W	= 2,
-MAUSEL_D	= 3
-} mau_sel;
+MAUSEL_NONE	= 2'd0,
+MAUSEL_B	= 2'd1,
+MAUSEL_W	= 2'd2,
+MAUSEL_D	= 2'd3
+} mau_sel_t;
 
 `endif

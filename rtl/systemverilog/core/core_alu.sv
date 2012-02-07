@@ -8,14 +8,17 @@
  * TODO
  */
 
-`include "i2d_soc_defines.sv"
+`include "i2d_core_defines.sv"
 
 module core_alu(
-	input instruction ex_instr, input sr sr, input [31:0] operand_a,
+	input instr_t ex_instr, input sr_t sr, input [31:0] operand_a,
 	input [31:0] operand_b, output sr_cf, output sr_of, output sr_zf,
-	output [31:0] result
+	output [31:0] alu_result
 );
 
+logic [31:0] result;
+
+assign alu_result = result;
 
 always_comb
 begin
@@ -34,12 +37,13 @@ begin
 		sr_zf = ~(|result);
 	end
 	OPCODE_SUB: begin
-		result = {1,sr_cf,oprand_a} - operand_b;
+		sr_cf = 0;
+		result = {1'b1,sr_cf,operand_a} - operand_b;
 		sr_of = (operand_a[31] & !operand_b[31]) != result[31];
 		sr_zf = ~(|result);
 	end
 	OPCODE_SUB: begin
-		result = {1,sr_cf,oprand_a} - operand_b - sr_cf;
+		result = {1'b1,sr_cf,operand_a} - operand_b - sr_cf;
 		sr_of = (operand_a[31] & !operand_b[31]) != result[31];
 		sr_zf = ~(|result);
 	end
@@ -88,3 +92,4 @@ begin
 	endcase
 end
 
+endmodule

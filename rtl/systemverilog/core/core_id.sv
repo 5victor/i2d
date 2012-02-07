@@ -9,15 +9,14 @@
  */
 
 `include "i2d_core_defines.sv"
-`include "instruction.sv"
 
 module core_id(
 	input clk, rst,
 	input [31:0] if_pc, input [31:0] if_instr, input id_halt, flush,
 	input if_busy, input [3:0] wb_addr,
 	output [3:0] rega_addr, output [3:0] regb_addr, output [31:0] imm,
-	output opmux_a opmux_a, output opmux_b opmux_b,
-	output logic [31:0] id_pc, output instruction id_instr
+	output opmux_a_t opmux_a, output opmux_b_t opmux_b,
+	output logic [31:0] id_pc, output instr_t id_instr
 );
 //logic	[31:0]	id_pc;
 //instruction	id_instr;
@@ -30,7 +29,7 @@ always_ff @(posedge clk)
 begin
 	if (!rst) begin
 		id_pc <= 0;
-		id_instr <= {`CORE_OPCODE_NOP, (32-`CORE_OPCODE_WIDTH)'b0};
+		id_instr <= {OPCODE_NOP, '0};
 	end
 	else if (!if_busy) begin
 		id_pc <= if_pc;
@@ -41,29 +40,34 @@ begin
 		id_instr <= id_instr;
 	end
 	else if (flush)
-		id_instr <= {OPCODE_NOP, {26{1}}}; // for record flush nop
+		id_instr <= {OPCODE_NOP, {26{1'b1}}}; // for record flush nop
 end
 
 //decode imm
 always_comb
 begin
-	if(id_instr.i)
+	if(id_instr.i) begin
 		if (id_instr.s)
 			imm[31:11] = {21{id_instr[10]}};
 		else
 			imm[31:11] = '0;
 		imm[10:0] = id_instr[10:0];
+		end
 	else
 		imm = '0;
 end
 
 //decode operandmux
+logic	op_rega_wb;
+logic	op_regb_wb;
+logic	op_rega_pc;
+logic	op_regb_pc;
 always_comb
 begin
-	logic	op_rega_wb = rega_addr == wb_addr;
-	logic	op_regb_wb = regb_addr == wb_addr;
-	logic	op_rega_pc = rega_addr == RF_PC;
-	logic	op_regb_pc = rega_addr == RF_PC;
+	op_rega_wb = rega_addr == wb_addr;
+	op_regb_wb = regb_addr == wb_addr;
+	op_rega_pc = rega_addr == RF_PC;
+	op_regb_pc = rega_addr == RF_PC;
 	unique case({op_rega_wb,op_rega_pc})
 		2'b00: opmux_a = OPMUX_A_RA;
 		2'b01: opmux_a = OPMUX_A_PC;
@@ -88,3 +92,5 @@ always_comb
 begin
 
 end
+
+endmodule

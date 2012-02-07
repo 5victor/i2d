@@ -8,9 +8,11 @@
  * TODO
  */
 
-module operand_mux(
+`include "i2d_core_defines.sv"
+
+module core_operand_mux(
 	input clk, rst,
-	input opmux_a opmux_a, input opmux_b opmux_b, input [31:0] rega_data,
+	input opmux_a_t opmux_a, input opmux_b_t opmux_b, input [31:0] rega_data,
 	input [31:0] regb_data, input [31:0] imm, input [31:0] id_pc,
 	input [31:0] wb_data,
 	output logic [31:0] operand_a, output logic [31:0] operand_b
@@ -44,3 +46,5 @@ begin
 		OPMUX_B_WB: op_b = wb_data;
 	endcase
 end
+
+endmodule
