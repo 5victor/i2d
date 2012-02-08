@@ -40,9 +40,7 @@ wire	[31:0]	operand_a;
 wire	[31:0]	operand_b;
 
 //core_alu output
-wire		sr_cf;
-wire		sr_of;
-wire		sr_zf;
+flag_t flag;
 wire	[31:0]	alu_result;
 
 //core_mau output
@@ -58,6 +56,7 @@ instr_t ex_instr;
 wire	[31:0]	ex_pc;
 
 
+
 //other output
 wire		if_halt;
 wire		set_pc;
@@ -66,6 +65,7 @@ wire		id_halt;
 wire		flush;
 sr_t sr;
 wire		ex_halt;
+flag_t flag_in = sr.flag;
 
 core_if	core_if(.bus(ibus), .*);
 

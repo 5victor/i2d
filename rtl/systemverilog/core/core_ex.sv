@@ -14,7 +14,7 @@ module core_ex(
 	input clk, rst,
 	input instr_t id_instr, input [31:0] id_pc, input ex_halt,
 	output [3:0] wb_addr, output wb, output [31:0] wb_data,
-	output instr_t ex_instr, output [31:0] ex_pc,
+	output instr_t ex_instr, output [31:0] ex_pc, output swi,
 	input [31:0] mau_data, input [31:0] alu_result, input [31:0] rega_data
 );
 
@@ -65,6 +65,16 @@ begin
 		end
 		default: wb = 0;
 	endcase
+end
+
+always_ff @(posedge clk, negedge rst)
+begin
+	if (!rst)
+		swi = 0;
+	else if (ex_instr.opcode == OPCODE_SWI)
+		swi = 1;
+	else
+		swi = 0;
 end
 
 endmodule

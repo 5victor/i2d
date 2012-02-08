@@ -9,7 +9,9 @@
 
 //`include "i2d_soc_defines.v"
 
-typedef logic [31:0] bit_wide; //need a proper name
+typedef logic [31:0] data_t;
+typedef logic [31:0] addr_t;
+typedef logic [31:0] reg_t;
 
 //ALU instruction
 typedef enum logic [5:0] {
@@ -113,16 +115,33 @@ ALUOP_LSR	= 11,
 ALUOP_ASL	= 12,
 ALUOP_ASR	= 13,
 ALUOP_ERR	= 14
-} aluop;
+} aluop_t;
 */
 
-//status register
 typedef struct packed {
-	logic	[3:0]	mode;
-	logic	[0:0]	dummy;
 	logic	cf;
 	logic	of;
 	logic	zf;
+} flag_t;
+
+typedef enum logic [2:0] {
+MODE_SYS,
+MODE_IRQ,
+MODE_SWI,
+MODE_USER
+} mode_t;
+
+typedef enum logic [2:0] {
+VECTOR_RST,
+VECTOR_IRQ,
+VECTOR_SWI
+} vector_t;
+
+//status register
+typedef struct packed {
+	mode_t	mode;
+	logic	i;
+	flag_t	flag;
 } sr_t;
 
 
