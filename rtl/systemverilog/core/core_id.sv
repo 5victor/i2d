@@ -12,7 +12,7 @@
 
 module core_id(
 	input clk, rst,
-	input [31:0] if_pc, input [31:0] if_instr, input id_halt, flush,
+	input [31:0] if_pc, input instr_t if_instr, input id_halt, flush,
 	input if_busy, input [3:0] wb_addr,
 	output [3:0] rega_addr, output [3:0] regb_addr, output [31:0] imm,
 	output opmux_a_t opmux_a, output opmux_b_t opmux_b,
@@ -22,18 +22,14 @@ module core_id(
 //instruction	id_instr;
 logic	opcode_err;
 
-assign rega_addr = id_instr[21:18];
-assign regb_addr = id_instr[17:14];
+assign rega_addr = if_instr.rega;
+assign regb_addr = if_instr.regb;
 
-always_ff @(posedge clk)
+always_ff @(posedge clk, negedge rst, posedge id_halt)
 begin
 	if (!rst) begin
 		id_pc <= 0;
 		id_instr <= {OPCODE_NOP, '0};
-	end
-	else if (!if_busy) begin
-		id_pc <= if_pc;
-		id_instr <= if_instr;
 	end
 	else if (id_halt) begin
 		id_pc <= id_pc;
@@ -41,10 +37,14 @@ begin
 	end
 	else if (flush)
 		id_instr <= {OPCODE_NOP, {26{1'b1}}}; // for record flush nop
+	else begin
+		id_pc <= if_pc;
+		id_instr <= if_instr;
+	end
 end
 
 //decode imm
-always_comb
+always_ff @(posedge clk)
 begin
 	if(id_instr.i) begin
 		if (id_instr.s)

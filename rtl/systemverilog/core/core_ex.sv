@@ -18,13 +18,17 @@ module core_ex(
 	input [31:0] mau_data, input [31:0] alu_result, input [31:0] rega_data
 );
 
-always_ff @(posedge clk)
+always_ff @(posedge clk, negedge rst, posedge ex_halt)
 begin
 	if (!rst) begin
 		ex_instr <= 'b0;
 		ex_pc <= 0;
 	end
-	else if (!ex_halt) begin
+	else if (ex_halt) begin
+		ex_instr <= ex_instr;
+		ex_pc <= ex_pc;
+	end
+	else begin
 		ex_instr <= id_instr;
 		ex_pc <= id_pc;
 	end
@@ -32,10 +36,9 @@ end
 
 always_comb
 begin
-	wb = 0;
-	wb_addr = ex_instr.regd_cond_sel;
+	wb_addr = ex_instr.regd_cond;
 	wb_data = 0;
-	unique case(ex_instr)
+	unique case(ex_instr.opcode)
 		OPCODE_ADD,
 		OPCODE_ADDC,
 		OPCODE_SUB,
@@ -60,6 +63,7 @@ begin
 			wb = 1;
 			wb_data = rega_data;
 		end
+		default: wb = 0;
 	endcase
 end
 

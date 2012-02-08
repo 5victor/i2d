@@ -15,8 +15,7 @@ module core_mau(
 	wishbone.pl_master bus,
 	input instr_t if_instr, input [31:0] regb_data, input [31:0] imm,
 	input [31:0] rega_data,
-	output mau_busy, output [3:0] regm_addr, input [31:0] regm_data,
-	output [31:0] mau_data
+	output mau_busy, output [31:0] mau_data
 );
 mau_op_t	mau_op;
 mau_sel_t	mau_sel;
@@ -47,7 +46,10 @@ begin
 		bus.stb = 1;
 		if (mau_op == MAUOP_W)
 			bus.we = 1;
-		else	bus.we = 0;
+		else begin
+			bus.we = 0;
+			bus.dat_mo = rega_data;
+		end
 		unique case(mau_sel)
 			MAUSEL_B: bus.sel = 4'b0001;
 			MAUSEL_W: bus.sel = 4'b0011;
@@ -63,9 +65,9 @@ end
 always_comb
 begin
 	if (if_instr.i)
-		bus.adr = rega_data + imm;
+		bus.adr = regb_data + imm;
 	else
-		bus.adr = rega_data + regb_data;
+		bus.adr = regb_data;
 end
 
 always_ff @(posedge clk)

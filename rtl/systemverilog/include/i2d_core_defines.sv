@@ -51,9 +51,9 @@ OPCODE_MRS	= 6'd29
 
 typedef struct packed {
 	opcode_t opcode;
-	logic [3:0] regd_cond_sel;
+	logic [3:0] regd_cond;
 	logic [3:0] rega;
-	logic [3:0] regb_dummy;
+	logic [3:0] regb;
 	logic	i;
 	logic	s;
 	logic	[11:0] imm;

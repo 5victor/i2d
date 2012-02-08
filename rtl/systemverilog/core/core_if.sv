@@ -28,13 +28,16 @@ assign bus.cyc = !if_halt;
 assign bus.stb = bus.cyc;
 assign bus.we = 0;
 
-always_ff @(posedge clk)
+always_ff @(posedge clk, negedge rst, posedge if_halt)
 begin
 	if (!rst) begin
 		pc <= 0;
 		last_pc <= 0;
 	end
-	else if (!if_halt) begin
+	else if (if_halt) begin
+		pc <= pc;
+	end
+	else begin
 	       	if (bus.ack)
 			pc <= pc + 4;
 		else if (set_pc) //
@@ -43,8 +46,6 @@ begin
 			pc <= pc;
 		last_pc <= pc;
 	end
-	else
-		pc <= pc;
 end
 
 endmodule
