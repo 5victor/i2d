@@ -14,15 +14,16 @@
 module core_if(
 	input clk, rst,
 	wishbone.pl_master bus,
-	input if_halt, set_pc, input [31:0] new_pc,
-	output [31:0] if_pc, output instr_t if_instr, output if_busy
+	input if_halt, set_pc, input addr_t new_pc,
+	output addr_t if_pc, output instr_t if_instr
 );
-logic	[31:0]	pc;
-logic	[31:0]	last_pc;
+addr_t	pc;
+addr_t	last_pc;
+logic	if_busy;
 
 assign bus.adr = pc;
 assign if_pc = last_pc;
-assign if_instr = bus.dat_so;
+assign if_instr = if_busy?{OPCODE_NOP,26'(0)} : bus.dat_so;
 assign if_busy = !bus.ack | if_halt;
 assign bus.cyc = !if_halt;
 assign bus.stb = bus.cyc;

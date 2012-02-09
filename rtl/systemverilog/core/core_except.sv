@@ -59,12 +59,13 @@ begin
 		new_pc = VECTOR_SWI;
 		mode = MODE_SWI;
 		write_mode = 1;
+	end
 	else begin
 		except = 0;
 		set_pc = 0;
 		new_pc = 0;
-		mode = 0;
-		write_mode = 1;
+		mode = MODE_NONE;
+		write_mode = 0;
 	end
 end
 

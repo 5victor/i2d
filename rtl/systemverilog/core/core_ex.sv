@@ -12,9 +12,9 @@
 
 module core_ex(
 	input clk, rst,
-	input instr_t id_instr, input [31:0] id_pc, input ex_halt,
+	input instr_t id_instr, input [31:0] id_pc, input ex_halt, input flush,
 	output [3:0] wb_addr, output wb, output [31:0] wb_data,
-	output instr_t ex_instr, output [31:0] ex_pc, output swi,
+	output instr_t ex_instr, output [31:0] ex_pc,
 	input [31:0] mau_data, input [31:0] alu_result, input [31:0] rega_data
 );
 
@@ -27,6 +27,9 @@ begin
 	else if (ex_halt) begin
 		ex_instr <= ex_instr;
 		ex_pc <= ex_pc;
+	end
+	else if (flush) begin
+		ex_instr <= {OPCODE_NOP,26'(1)}; // for record flush nop
 	end
 	else begin
 		ex_instr <= id_instr;
@@ -65,16 +68,6 @@ begin
 		end
 		default: wb = 0;
 	endcase
-end
-
-always_ff @(posedge clk, negedge rst)
-begin
-	if (!rst)
-		swi = 0;
-	else if (ex_instr.opcode == OPCODE_SWI)
-		swi = 1;
-	else
-		swi = 0;
 end
 
 endmodule

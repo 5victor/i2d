@@ -12,11 +12,11 @@
 
 module core_id(
 	input clk, rst,
-	input [31:0] if_pc, input instr_t if_instr, input id_halt, flush,
-	input if_busy, input [3:0] wb_addr,
-	output [3:0] rega_addr, output [3:0] regb_addr, output [31:0] imm,
-	output opmux_a_t opmux_a, output opmux_b_t opmux_b,
-	output logic [31:0] id_pc, output instr_t id_instr
+	input addr_t if_pc, input instr_t if_instr, input id_halt, flush,
+	input reg_addr_t wb_addr,
+	output reg_addr_t rega_addr, output reg_addr_t regb_addr, output swi,
+	output data_t imm, output opmux_a_t opmux_a, output opmux_b_t opmux_b,
+	output addr_t id_pc, output instr_t id_instr
 );
 //logic	[31:0]	id_pc;
 //instruction	id_instr;
@@ -29,14 +29,14 @@ always_ff @(posedge clk, negedge rst, posedge id_halt)
 begin
 	if (!rst) begin
 		id_pc <= 0;
-		id_instr <= {OPCODE_NOP, '0};
+		id_instr <= {OPCODE_NOP,26'(0)};
 	end
 	else if (id_halt) begin
 		id_pc <= id_pc;
 		id_instr <= id_instr;
 	end
 	else if (flush)
-		id_instr <= {OPCODE_NOP, {26{1'b1}}}; // for record flush nop
+		id_instr <= {OPCODE_NOP,26'(1)}; // for record flush nop
 	else begin
 		id_pc <= if_pc;
 		id_instr <= if_instr;
@@ -81,6 +81,15 @@ begin
 	endcase
 end
 
+always_ff @(posedge clk, negedge rst)
+begin
+	if (!rst)
+		swi = 0;
+	else if (id_instr.opcode == OPCODE_SWI)
+		swi = 1;
+	else
+		swi = 0;
+end
 //decode alu_op & opcode_err
 // alu_op in alu
 

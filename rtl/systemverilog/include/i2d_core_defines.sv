@@ -12,6 +12,7 @@
 typedef logic [31:0] data_t;
 typedef logic [31:0] addr_t;
 typedef logic [31:0] reg_t;
+typedef logic [3:0] reg_addr_t;
 
 //ALU instruction
 typedef enum logic [5:0] {
@@ -125,16 +126,17 @@ typedef struct packed {
 } flag_t;
 
 typedef enum logic [2:0] {
-MODE_SYS,
-MODE_IRQ,
-MODE_SWI,
-MODE_USER
+MODE_NONE = 3'd0,
+MODE_SYS = 3'd1,
+MODE_IRQ = 3'd2,
+MODE_SWI = 3'd3,
+MODE_USER = 3'd4
 } mode_t;
 
 typedef enum logic [2:0] {
-VECTOR_RST,
-VECTOR_IRQ,
-VECTOR_SWI
+VECTOR_RST = 3'd1,
+VECTOR_IRQ = 3'd2,
+VECTOR_SWI = 3'd3
 } vector_t;
 
 //status register
