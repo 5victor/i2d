@@ -16,10 +16,10 @@ module core_ex(
 	output reg_addr_t wb_addr, output wb, output data_t wb_data,
 	output instr_t ex_instr, output addr_t ex_pc,
 	input data_t mau_data, input data_t alu_result, input data_t rega_data,
-	input sr_t sr; input sr_t esr, input reg_t epc
+	input sr_t sr, input sr_t esr, input reg_t epc
 );
 
-always_ff @(posedge clk, negedge rst, posedge ex_halt)
+always_ff @(posedge clk, negedge rst)
 begin
 	if (!rst) begin
 		ex_instr <= 'b0;

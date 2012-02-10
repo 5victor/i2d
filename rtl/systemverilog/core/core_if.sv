@@ -15,7 +15,7 @@ module core_if(
 	input clk, rst,
 	wishbone.pl_master bus,
 	input if_halt, set_pc, input addr_t new_pc,
-	output addr_t if_pc, output instr_t if_instr
+	output addr_t if_pc, output instr_t if_instr, output if_err
 );
 addr_t	pc;
 addr_t	last_pc;
@@ -28,8 +28,10 @@ assign if_busy = !bus.ack | if_halt;
 assign bus.cyc = !if_halt;
 assign bus.stb = bus.cyc;
 assign bus.we = 0;
+assign bus.sel = 4'b1111;
+assign if_err = bus.err;
 
-always_ff @(posedge clk, negedge rst, posedge if_halt)
+always_ff @(posedge clk, negedge rst)
 begin
 	if (!rst) begin
 		pc <= 0;

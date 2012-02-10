@@ -18,7 +18,7 @@ module core_id(
 	output data_t imm, output opmux_a_t opmux_a, output opmux_b_t opmux_b,
 	output addr_t id_pc, output instr_t id_instr, output branch_imm,
 	output branch_abs, output rfe, output reg_addr_t spr_addr,
-	output wb_spr, output id_err
+	output wb_spr, output id_err, output branch
 );
 //logic	[31:0]	id_pc;
 //instruction	id_instr;
@@ -27,7 +27,7 @@ logic	opcode_err;
 assign rega_addr = if_instr.rega;
 assign regb_addr = if_instr.regb;
 
-always_ff @(posedge clk, negedge rst, posedge id_halt)
+always_ff @(posedge clk, negedge rst)
 begin
 	if (!rst) begin
 		id_pc <= 0;
@@ -130,14 +130,14 @@ always_comb
 begin
 	if (id_instr.opcode == OPCODE_MOV) begin
 		if (id_instr.regb[1])
-			wb_spr = 1
+			wb_spr = 1;
 		else
 			wb_spr = 0;
 	end
 	else
 		wb_spr = 0;
 	
-	spr_addr = id_instr.regd;
+	spr_addr = id_instr.regd_cond;
 end
 
 //decode id_err

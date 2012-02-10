@@ -15,11 +15,13 @@ module core_mau(
 	wishbone.pl_master bus,
 	input instr_t if_instr, input data_t regb_data, input data_t imm,
 	input data_t rega_data,
-	output mau_busy, output data_t mau_data
+	output mau_busy, output data_t mau_data, output mau_err
 );
 mau_op_t	mau_op;
 mau_sel_t	mau_sel;
 logic last_stb, last_stb2;
+
+assign mau_err = bus.err;
 
 always_comb
 begin

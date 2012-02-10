@@ -19,6 +19,7 @@ module core_cpu(
 //core_if output
 addr_t	if_pc;
 data_t	if_instr;
+wire	if_err;
 
 //core_id output
 wire	[3:0]	rega_addr;
@@ -29,22 +30,30 @@ opmux_b_t		opmux_b;
 wire	[31:0]	id_pc;
 instr_t	id_instr;
 wire	swi;
+wire	branch_imm;
+wire	branch_abs;
+wire	rfe;
+reg_addr_t	spr_addr;
+wire	wb_spr;
+wire	id_err;
+wire	branch;
 
 //core_rf_gpr output
-wire	[31:0]	rega_data;
-wire	[31:0]	regb_data;
+data_t	rega_data;
+data_t	regb_data;
 
 //core_operand_mux output
-wire	[31:0]	operand_a;
-wire	[31:0]	operand_b;
+data_t	operand_a;
+data_t	operand_b;
 
 //core_alu output
 flag_t flag;
-wire	[31:0]	alu_result;
+data_t	alu_result;
 
 //core_mau output
 wire		mau_busy;
 wire	[31:0]	mau_data;
+wire	mau_err;
 
 //core_ex output
 wire	[3:0]	wb_addr;
@@ -57,26 +66,24 @@ wire	[31:0]	ex_pc;
 sr_t sr;
 flag_t flag_in;
 
-//core_except output
+//core_ctrl output
 reg_t	epc;
-reg_t	esr;
+sr_t	esr;
 wire		set_pc;
 addr_t	new_pc;
 mode_t	mode;
 wire	write_mode;
-wire	except;
-
-//core_ctrl output
-wire		if_halt;
-wire		id_halt;
-wire		flush;
-wire		ex_halt;
+sr_t	wb_sr;
+wire	write_sr;
+wire	if_halt;
+wire	id_halt;
+wire	id_flush;
+wire	ex_flush;
+wire	ex_halt;
 
 //other
-wire write_sr;
-sr_t sr_in;
-wire write_i;
 wire i;
+wire write_i;
 
 assign flag_in = sr.flag;
 
@@ -95,8 +102,6 @@ core_alu core_alu(.*);
 core_ex core_ex(.*);
 
 core_rf_sr core_rf_sr(.*);
-
-core_except core_except(.*);
 
 core_ctrl core_ctrl(.*);
 

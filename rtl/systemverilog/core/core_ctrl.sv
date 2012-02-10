@@ -1,4 +1,4 @@
-/* core_except.sv
+/* core_ctrl.sv
  *
  * Copyright Victor Wen, vic7tor@gmail.com
  * This code publish under GNU GPL License
@@ -17,7 +17,7 @@ module core_ctrl(
 	output write_mode, output addr_t new_pc,
 	output sr_t wb_sr, output write_sr,
 	input addr_t if_pc, input addr_t ex_pc, input if_err, input mau_err,
-	input id_err, output id_flush, ex_flush,
+	input id_err, output id_flush, ex_flush, input branch_abs,
 	input mau_busy, output if_halt, id_halt, ex_halt
 );
 
@@ -85,7 +85,7 @@ begin
 		id_flush = 1;
 		ex_flush = 0;
 		mode = MODE_IFERR;
-		write_mode = 1
+		write_mode = 1;
 	end
 	else if (id_err) begin
 		id_flush = 1;
@@ -109,11 +109,11 @@ end
 
 always_comb
 begin
-	if (except && irq) begin
+	if (sr.i && irq) begin
 		set_pc = 1;
 		new_pc = VECTOR_IRQ;
 	end
-	else if (except && swi) begin
+	else if (sr.i && swi) begin
 		set_pc = 1;
 		new_pc = VECTOR_SWI;
 	end
@@ -149,7 +149,7 @@ begin
 		write_sr = 1;
 		wb_sr = esr;
 	end
-	else if (wb_sr && spr_addr = SPR_SR) begin
+	else if (wb_sr && (spr_addr == SPR_SR)) begin
 		write_sr = 1;
 		wb_sr = sr_t'(rega_data);
 	end
