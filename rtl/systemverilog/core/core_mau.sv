@@ -13,9 +13,9 @@
 module core_mau(
 	input clk, rst,
 	wishbone.pl_master bus,
-	input instr_t if_instr, input [31:0] regb_data, input [31:0] imm,
-	input [31:0] rega_data,
-	output mau_busy, output [31:0] mau_data
+	input instr_t if_instr, input data_t regb_data, input data_t imm,
+	input data_t rega_data,
+	output mau_busy, output data_t mau_data
 );
 mau_op_t	mau_op;
 mau_sel_t	mau_sel;

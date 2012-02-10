@@ -45,11 +45,8 @@ OPCODE_NOP	= 6'd21,
 OPCODE_MOV	= 6'd22,
 OPCODE_SWI	= 6'd23,
 OPCODE_CALL	= 6'd24,
-OPCODE_CALLI	= 6'd25,
 OPCODE_RET	= 6'd26,
-OPCODE_RFE	= 6'd27,
-OPCODE_MSR	= 6'd28,
-OPCODE_MRS	= 6'd29
+OPCODE_RFE	= 6'd27
 } opcode_t;
 
 typedef struct packed {
@@ -62,6 +59,7 @@ typedef struct packed {
 	logic	[11:0] imm;
 } instr_t;
 
+/*
 //branch cond
 typedef enum logic [3:0] {
 COND_B		= 4'd1,
@@ -72,6 +70,7 @@ COND_BL		= 4'd5,
 COND_BA		= 4'd6,
 COND_BB		= 4'd7
 } cond_t;
+*/
 
 //i2d regfile
 typedef enum logic [3:0] {
@@ -79,6 +78,12 @@ typedef enum logic [3:0] {
 	RF_SP = 4'b1110,
 	RF_PC = 4'b1111
 } mode_depend_gpr;
+
+typedef enum logic [3:0] {
+	SPR_SR = 4'b0001,
+	SPR_EPC = 4'b0010,
+	SPR_ESR = 4'b0011
+} spr_t;
 
 //oprand mux
 typedef enum logic [3:0] {
@@ -130,13 +135,19 @@ MODE_NONE = 3'd0,
 MODE_SYS = 3'd1,
 MODE_IRQ = 3'd2,
 MODE_SWI = 3'd3,
-MODE_USER = 3'd4
+MODE_USER = 3'd4,
+MODE_IFERR = 3'd5,
+MODE_IDERR = 3'd6,
+MODE_MAUERR = 3'd7
 } mode_t;
 
 typedef enum logic [2:0] {
 VECTOR_RST = 3'd1,
 VECTOR_IRQ = 3'd2,
-VECTOR_SWI = 3'd3
+VECTOR_SWI = 3'd3,
+VECTOR_IFERR = 3'd4,
+VECTOR_IDERR = 3'd5,
+VECTOR_MAUERR = 3'd6
 } vector_t;
 
 //status register

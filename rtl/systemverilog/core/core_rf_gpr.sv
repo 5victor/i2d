@@ -12,11 +12,11 @@
 
 module core_rf_gpr(
 	input clk,
-	input [3:0] rega_addr, input [3:0] regb_addr, output [31:0] rega_data,
-	output [31:0] regb_data,
-	input wb, input [3:0] wb_addr, input [31:0] wb_data
+	input reg_addr_t rega_addr, input reg_addr_t regb_addr,
+	output data_t rega_data, output data_t regb_data,
+	input wb, input reg_addr_t wb_addr, input data_t wb_data
 );
-logic	[31:0]	regmem[15];
+reg_t	regmem[15];
 
 always_ff @(posedge clk)
 begin

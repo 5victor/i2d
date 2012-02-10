@@ -12,7 +12,7 @@
  
 module core_rf_sr(
 	input clk, rst,
-	input flag_t flag, input write_sr, input sr_t sr_in, output sr_t sr,
+	input flag_t flag, input write_sr, input sr_t wb_sr, output sr_t sr,
 	input write_mode, input mode_t mode, input write_i, input i
 );
 sr_t to_sr;
@@ -28,7 +28,7 @@ end
 always_comb
 begin
 	if (write_sr)
-		to_sr = sr_in;
+		to_sr = wb_sr;
 	else begin
 		to_sr.flag = flag;
 		if (write_mode)

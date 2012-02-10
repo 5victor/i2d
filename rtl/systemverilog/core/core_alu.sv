@@ -11,12 +11,12 @@
 `include "i2d_core_defines.sv"
 
 module core_alu(
-	input instr_t ex_instr, input flag_t flag_in, input [31:0] operand_a,
-	input [31:0] operand_b, output flag_t flag,
-	output [31:0] alu_result
+	input instr_t ex_instr, input flag_t flag_in, input data_t operand_a,
+	input data_t operand_b, output flag_t flag,
+	output data_t alu_result
 );
 
-logic [31:0] result;
+data_t result;
 
 assign alu_result = result;
 

@@ -12,11 +12,13 @@
 
 module core_id(
 	input clk, rst,
-	input addr_t if_pc, input instr_t if_instr, input id_halt, flush,
-	input reg_addr_t wb_addr,
+	input addr_t if_pc, input instr_t if_instr, input id_halt, id_flush,
+	input reg_addr_t wb_addr, input flag_t flag,
 	output reg_addr_t rega_addr, output reg_addr_t regb_addr, output swi,
 	output data_t imm, output opmux_a_t opmux_a, output opmux_b_t opmux_b,
-	output addr_t id_pc, output instr_t id_instr
+	output addr_t id_pc, output instr_t id_instr, output branch_imm,
+	output branch_abs, output rfe, output reg_addr_t spr_addr,
+	output wb_spr, output id_err
 );
 //logic	[31:0]	id_pc;
 //instruction	id_instr;
@@ -31,12 +33,12 @@ begin
 		id_pc <= 0;
 		id_instr <= {OPCODE_NOP,26'(0)};
 	end
+	else if (id_flush)
+		id_instr <= {OPCODE_NOP,26'(1)}; // for record flush nop
 	else if (id_halt) begin
 		id_pc <= id_pc;
 		id_instr <= id_instr;
 	end
-	else if (flush)
-		id_instr <= {OPCODE_NOP,26'(1)}; // for record flush nop
 	else begin
 		id_pc <= if_pc;
 		id_instr <= if_instr;
@@ -99,7 +101,49 @@ end
 //decode branch
 always_comb
 begin
+	case(id_instr.opcode)
+		OPCODE_B: begin
+			if (id_instr.regd_cond[2:0] == flag)
+				branch = 1;
+			else
+				branch = 0;
+		end
+		OPCODE_CALL: branch = 1;
+		OPCODE_RET: branch = 1;
+		default : branch = 0;
+	endcase
+	branch_imm = id_instr.i;
+	branch_abs = id_instr.regb[0];
+end
 
+//decode rfe
+always_comb
+begin
+	if (id_instr.opcode == OPCODE_RFE)
+		rfe = 1;
+	else
+		rfe = 0;
+end
+
+//decode mov
+always_comb
+begin
+	if (id_instr.opcode == OPCODE_MOV) begin
+		if (id_instr.regb[1])
+			wb_spr = 1
+		else
+			wb_spr = 0;
+	end
+	else
+		wb_spr = 0;
+	
+	spr_addr = id_instr.regd;
+end
+
+//decode id_err
+always_comb
+begin
+	id_err = 0;
 end
 
 endmodule

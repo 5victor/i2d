@@ -12,15 +12,15 @@
 
 module core_operand_mux(
 	input clk, rst,
-	input opmux_a_t opmux_a, input opmux_b_t opmux_b, input [31:0] rega_data,
-	input [31:0] regb_data, input [31:0] imm, input [31:0] ex_pc,
-	input [31:0] wb_data,
-	output logic [31:0] operand_a, output logic [31:0] operand_b
+	input opmux_a_t opmux_a, input opmux_b_t opmux_b,
+	input data_t rega_data, input data_t regb_data, input data_t imm,
+	input addr_t ex_pc, input data_t wb_data,
+	output data_t operand_a, output data_t operand_b
 );
-logic	[31:0]	op_a;
-logic	[31:0]	op_b;
-logic	[31:0]	rega;
-logic	[31:0]	regb;
+data_t	op_a;
+data_t	op_b;
+data_t	rega;
+data_t	regb;
 
 
 always_ff @(posedge clk, negedge rst)

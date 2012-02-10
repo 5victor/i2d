@@ -35,17 +35,17 @@ begin
 		pc <= 0;
 		last_pc <= 0;
 	end
+	else if (set_pc) //prority set_pc must higher than if_halt, 
+		pc <= new_pc;
 	else if (if_halt) begin
 		pc <= pc;
 	end
 	else begin
+		last_pc <= pc;
 	       	if (bus.ack)
 			pc <= pc + 4;
-		else if (set_pc) //
-			pc <= new_pc;
 		else
-			pc <= pc;
-		last_pc <= pc;
+			pc <= pc;	
 	end
 end
 

@@ -12,10 +12,11 @@
 
 module core_ex(
 	input clk, rst,
-	input instr_t id_instr, input [31:0] id_pc, input ex_halt, input flush,
-	output [3:0] wb_addr, output wb, output [31:0] wb_data,
-	output instr_t ex_instr, output [31:0] ex_pc,
-	input [31:0] mau_data, input [31:0] alu_result, input [31:0] rega_data
+	input instr_t id_instr, input addr_t id_pc, input ex_halt, ex_flush,
+	output reg_addr_t wb_addr, output wb, output data_t wb_data,
+	output instr_t ex_instr, output addr_t ex_pc,
+	input data_t mau_data, input data_t alu_result, input data_t rega_data,
+	input sr_t sr; input sr_t esr, input reg_t epc
 );
 
 always_ff @(posedge clk, negedge rst, posedge ex_halt)
@@ -24,12 +25,12 @@ begin
 		ex_instr <= 'b0;
 		ex_pc <= 0;
 	end
+	else if (ex_flush) begin
+		ex_instr <= {OPCODE_NOP,26'(1)}; // for record flush nop
+	end
 	else if (ex_halt) begin
 		ex_instr <= ex_instr;
 		ex_pc <= ex_pc;
-	end
-	else if (flush) begin
-		ex_instr <= {OPCODE_NOP,26'(1)}; // for record flush nop
 	end
 	else begin
 		ex_instr <= id_instr;
@@ -63,8 +64,26 @@ begin
 			wb_data = mau_data;
 		end
 		OPCODE_MOV: begin
+			if (ex_instr.regb[1])
+				wb = 0;
+			else
+				wb = 1;
+			if (ex_instr.regb[0]) begin
+				if (ex_instr.rega == SPR_SR)
+					wb_data = sr;
+				else if (ex_instr.rega == SPR_EPC)
+					wb_data = epc;
+				else if (ex_instr.rega == SPR_ESR)
+					wb_data = esr;
+				else
+					wb_data = 0;	
+			end
+			else
+				wb_data = rega_data;
+		end
+		OPCODE_CALL: begin
 			wb = 1;
-			wb_data = rega_data;
+			wb_data = ex_pc + 4;
 		end
 		default: wb = 0;
 	endcase
