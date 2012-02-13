@@ -25,10 +25,12 @@ assign mau_err = bus.err;
 
 always_comb
 begin
-	unique case(if_instr.opcode)
-		OPCODE_LD: mau_op = MAUOP_R;
-		OPCODE_ST: mau_op = MAUOP_W;
-		default: mau_op = MAUOP_NONE;
+	if ((if_instr.opcode & 6'(~3)) == OPCODE_LD)
+		mau_op = MAUOP_R;
+	else if ((if_instr.opcode & 6'(~3)) == OPCODE_ST)
+		mau_op = MAUOP_W;
+	else
+		mau_op = MAUOP_NONE;
 	endcase
 	mau_sel = mau_sel_t'(if_instr.opcode[1:0]);
 end
