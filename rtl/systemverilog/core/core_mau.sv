@@ -15,7 +15,8 @@ module core_mau(
 	wishbone.pl_master bus,
 	input instr_t if_instr, input data_t regb_data, input data_t imm,
 	input data_t rega_data,
-	output mau_busy, output data_t mau_data, output mau_err
+	output logic mau_busy, output data_t mau_data,
+	output logic mau_err
 );
 mau_op_t	mau_op;
 mau_sel_t	mau_sel;
@@ -31,7 +32,6 @@ begin
 		mau_op = MAUOP_W;
 	else
 		mau_op = MAUOP_NONE;
-	endcase
 	mau_sel = mau_sel_t'(if_instr.opcode[1:0]);
 end
 

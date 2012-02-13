@@ -14,11 +14,12 @@ module core_id(
 	input clk, rst,
 	input addr_t if_pc, input instr_t if_instr, input id_halt, id_flush,
 	input reg_addr_t wb_addr, input flag_t flag,
-	output reg_addr_t rega_addr, output reg_addr_t regb_addr, output swi,
-	output data_t imm, output opmux_a_t opmux_a, output opmux_b_t opmux_b,
-	output addr_t id_pc, output instr_t id_instr, output branch_imm,
-	output branch_abs, output rfe, output reg_addr_t spr_addr,
-	output wb_spr, output id_err, output branch
+	output reg_addr_t rega_addr, output reg_addr_t regb_addr,
+	output logic swi, output data_t imm, output opmux_a_t opmux_a,
+	output opmux_b_t opmux_b, output addr_t id_pc,
+	output instr_t id_instr, output logic branch_imm,
+	output logic branch_abs, rfe, output reg_addr_t spr_addr,
+	output logic wb_spr, id_err, branch
 );
 //logic	[31:0]	id_pc;
 //instruction	id_instr;

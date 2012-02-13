@@ -12,24 +12,24 @@ module core_ctrl(
 	input clk, rst,
 	input swi, input branch, input branch_imm, input reg_t rega_data,
 	input data_t imm, input reg_addr_t spr_addr, input wb_spr, input rfe,
-	input irq, output irq_ack, input addr_t id_pc, input sr_t sr,
-	output reg_t epc, output sr_t esr, output set_pc, output mode_t mode,
-	output write_mode, output addr_t new_pc,
-	output sr_t wb_sr, output write_sr,
+	input irq, output logic irq_ack, input addr_t id_pc, input sr_t sr,
+	output reg_t epc, output sr_t esr, output logic set_pc,
+	output mode_t mode, output logic write_mode, output addr_t new_pc,
+	output sr_t wb_sr, output logic write_sr,
 	input addr_t if_pc, input addr_t ex_pc, input if_err, input mau_err,
-	input id_err, output id_flush, ex_flush, input branch_abs,
-	input mau_busy, output if_halt, id_halt, ex_halt
+	input id_err, output logic id_flush, ex_flush, input branch_abs,
+	input mau_busy, output logic if_halt, id_halt, ex_halt
 );
 
 //irq_ack
 always_ff @(posedge clk, negedge rst)
 begin
 	if (!rst)
-		irq_ack = 0;
+		irq_ack = 1'b0;
 	else if (sr.i && irq)
-		irq_ack = 1;
+		irq_ack = 1'b1;
 	else
-		irq_ack = 0;
+		irq_ack = 1'b0;
 end
 
 //epc esr

@@ -15,7 +15,7 @@ module core_if(
 	input clk, rst,
 	wishbone.pl_master bus,
 	input if_halt, set_pc, input addr_t new_pc,
-	output addr_t if_pc, output instr_t if_instr, output if_err
+	output addr_t if_pc, output instr_t if_instr, output logic if_err
 );
 addr_t	pc;
 addr_t	last_pc;

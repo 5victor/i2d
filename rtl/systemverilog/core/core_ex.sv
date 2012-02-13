@@ -13,9 +13,10 @@
 module core_ex(
 	input clk, rst,
 	input instr_t id_instr, input addr_t id_pc, input ex_halt, ex_flush,
-	output reg_addr_t wb_addr, output wb, output data_t wb_data,
+	output reg_addr_t wb_addr, output logic wb, output data_t wb_data,
 	output instr_t ex_instr, output addr_t ex_pc,
-	input data_t mau_data, input data_t alu_result, input data_t rega_data,
+	input data_t mau_data, input data_t alu_result,
+	input data_t rega_data,
 	input sr_t sr, input sr_t esr, input reg_t epc
 );
 
