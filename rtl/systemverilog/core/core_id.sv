@@ -105,12 +105,12 @@ begin
 	case(id_instr.opcode)
 		OPCODE_B: begin
 			if (id_instr.regd_cond[2:0] == flag)
-				branch = 1;
+				branch = id_halt ? 0 : 1;
 			else
 				branch = 0;
 		end
-		OPCODE_CALL: branch = 1;
-		OPCODE_RET: branch = 1;
+		OPCODE_CALL: branch = id_halt ? 0 : 1;
+		OPCODE_RET: branch = id_halt ? 0 : 1;
 		default : branch = 0;
 	endcase
 	branch_imm = id_instr.i;
@@ -121,7 +121,7 @@ end
 always_comb
 begin
 	if (id_instr.opcode == OPCODE_RFE)
-		rfe = 1;
+		rfe = id_halt ? 0 : 1;
 	else
 		rfe = 0;
 end
@@ -131,7 +131,7 @@ always_comb
 begin
 	if (id_instr.opcode == OPCODE_MOV) begin
 		if (id_instr.regb[1])
-			wb_spr = 1;
+			wb_spr = id_halt ? 0 : 1;
 		else
 			wb_spr = 0;
 	end

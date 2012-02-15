@@ -11,7 +11,7 @@
 `ifndef WISHBONE_SV
 `define WISHBONE_SV
 
-interface wishbone;
+interface wishbone(input clk, rst);
 parameter adr_width = 32;
 parameter dat_width = 32;
 parameter sel_width = 4;
@@ -28,6 +28,11 @@ logic		rty;
 logic		err;
 logic		stall;
 
+clocking cb @(posedge clk);
+	input	adr, dat_mo, sel, cyc, stb, we;
+	inout	dat_so, ack, rty, err, stall;
+endclocking
+
 modport	pl_master(
 		output adr, dat_mo, sel, cyc, stb, we,
 		input dat_so, ack, err, stall
@@ -35,7 +40,8 @@ modport	pl_master(
 
 modport pl_slave(
 		input adr, dat_mo, sel, cyc, stb, we,
-		output dat_so, ack, err, stall
+		output dat_so, ack, err, stall,
+		clocking cb
 );
 
 endinterface

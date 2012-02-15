@@ -23,7 +23,7 @@ logic	if_busy;
 
 assign bus.adr = pc;
 assign if_pc = last_pc;
-assign if_instr = if_busy?{OPCODE_NOP,26'(0)} : bus.dat_so;
+assign if_instr = if_busy?{OPCODE_NOP,26'(0)} : if_halt?{OPCODE_NOP,26'(0)}:bus.dat_so;
 assign if_busy = !bus.ack | if_halt;
 assign bus.cyc = !if_halt;
 assign bus.stb = bus.cyc;

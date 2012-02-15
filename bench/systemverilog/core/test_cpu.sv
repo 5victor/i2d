@@ -16,7 +16,7 @@ module test_cpu(
 	input clk, rst,
 	wishbone.pl_master ibus,
 	wishbone.pl_master dbus, input irq, output irq_ack,
-	ref mailbox mb[9]
+	ref mailbox mb_out[9]
 );
 //core_if output
 addr_t	if_pc;
@@ -182,15 +182,15 @@ begin
 	ctrl_out.ex_flush = ex_flush;
 	ctrl_out.ex_halt = ex_halt;
 	
-	mb[CORE_IF].put(if_out);
-        mb[CORE_ID].put(id_out);
-        mb[CORE_RF_GPR].put(rf_gpr_out);
-        mb[CORE_OPERAND_MUX].put(operand_mux_out);
-        mb[CORE_ALU].put(alu_out);
-        mb[CORE_MAU].put(mau_out);
-        mb[CORE_EX].put(ex_out);
-        mb[CORE_RF_SR].put(rf_sr_out);
-	mb[CORE_CTRL].put(ctrl_out);
+	mb_out[CORE_IF].put(if_out);
+        mb_out[CORE_ID].put(id_out);
+        mb_out[CORE_RF_GPR].put(rf_gpr_out);
+        mb_out[CORE_OPERAND_MUX].put(operand_mux_out);
+        mb_out[CORE_ALU].put(alu_out);
+        mb_out[CORE_MAU].put(mau_out);
+        mb_out[CORE_EX].put(ex_out);
+        mb_out[CORE_RF_SR].put(rf_sr_out);
+	mb_out[CORE_CTRL].put(ctrl_out);
 end
 
 endmodule

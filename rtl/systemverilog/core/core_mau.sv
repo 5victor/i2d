@@ -36,17 +36,24 @@ begin
 end
 
 // cyc
-always_ff @(posedge clk)
+always_ff @(posedge clk, negedge rst)
 begin
-	if ((mau_op == MAUOP_R) || (mau_op == MAUOP_W))
+	if (!rst)
+		bus.cyc = 0;
+	else if ((mau_op == MAUOP_R) || (mau_op == MAUOP_W))
 		bus.cyc = 1;
 	else if ((last_stb2 == 0) && bus.ack)
 		bus.cyc = 0;
 end
 
-always_ff @(posedge clk)
+always_ff @(posedge clk, negedge rst)
 begin
-	if ((mau_op == MAUOP_R) || (mau_op == MAUOP_W)) begin
+	if (!rst) begin
+		bus.stb = 0;
+		bus.we = 1;
+		bus.sel = 0;
+	end
+	else if ((mau_op == MAUOP_R) || (mau_op == MAUOP_W)) begin
 		bus.stb = 1;
 		if (mau_op == MAUOP_W)
 			bus.we = 1;

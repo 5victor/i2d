@@ -57,18 +57,18 @@ begin
 		OPCODE_LSR,
 		OPCODE_ASL,
 		OPCODE_ASR: begin
-			wb = 1;
+			wb = ex_halt ? 0 : 1;
 			wb_data = alu_result;
 		end
 		OPCODE_LD: begin
-			wb = 1;
+			wb = ex_halt ? 0 : 1;
 			wb_data = mau_data;
 		end
 		OPCODE_MOV: begin
 			if (ex_instr.regb[1])
 				wb = 0;
 			else
-				wb = 1;
+				wb = ex_halt ? 0 : 1;
 			if (ex_instr.regb[0]) begin
 				if (ex_instr.rega == SPR_SR)
 					wb_data = sr;
@@ -83,7 +83,7 @@ begin
 				wb_data = rega_data;
 		end
 		OPCODE_CALL: begin
-			wb = 1;
+			wb = ex_halt ? 0 : 1;
 			wb_data = ex_pc + 4;
 		end
 		default: wb = 0;

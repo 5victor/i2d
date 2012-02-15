@@ -13,7 +13,7 @@
 module core_alu(
 	input instr_t ex_instr, input flag_t flag_in, input data_t operand_a,
 	input data_t operand_b, output flag_t flag,
-	output data_t alu_result
+	output data_t alu_result, input ex_halt
 );
 
 data_t result;
@@ -25,6 +25,8 @@ begin
 	flag.cf = flag_in.cf;
 	flag.of = flag_in.of;
 	flag.zf = flag_in.zf;
+	result = 0;
+	if (!ex_halt)
 	unique case(ex_instr.opcode)
 	OPCODE_ADD: begin
 		{flag.cf,result} = operand_a + operand_b;

@@ -12,16 +12,19 @@
 `include "wishbone.sv"
 
 module top;
-wishbone ibus();
-wishbone dbus();
 logic	clk, rst, irq, irq_ack;
-mailbox mb[9];
+mailbox mb_out[9];
+
+wishbone ibus(clk, rst);
+wishbone dbus(clk, rst);
 
 test_cpu test_cpu(.*);
 test test(.*);
 
 initial
 begin
+	for (int i = 0; i < 9; i++)
+		mb_out[i] = new(1);
 	rst = 0;
 	clk = 0;
 	#20 rst = 1;

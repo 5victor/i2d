@@ -15,7 +15,7 @@
 
 class core_if_out;
 	addr_t	if_pc;
-	data_t	if_instr;
+	instr_t	if_instr;
 	logic	if_err;
 endclass
 
