@@ -31,12 +31,12 @@ OPCODE_ASL	= 6'd12,
 OPCODE_ASR	= 6'd13,
 
 //MEM instruction
-OPCODE_LD	= 6'd14,
-OPCODE_LDB	= 6'd15,
-OPCODE_LDW	= 6'd16,
-OPCODE_ST	= 6'd17,
-OPCODE_STB	= 6'd18,
-OPCODE_STW	= 6'd19,
+OPCODE_LD	= 6'd50,
+OPCODE_LDB	= 6'd51,
+OPCODE_LDW	= 6'd52,
+OPCODE_ST	= 6'd60,
+OPCODE_STB	= 6'd61,
+OPCODE_STW	= 6'd62,
 
 //branch instruction may have 2 opcodes(imm, reg), while the condition in ins[26:0]
 OPCODE_B	= 6'd20,
@@ -167,10 +167,9 @@ MAUOP_W		= 2'd2
 
 //mau sel
 typedef enum logic [1:0] {
-MAUSEL_NONE	= 2'd0,
+MAUSEL_D	= 2'd0,
 MAUSEL_B	= 2'd1,
 MAUSEL_W	= 2'd2,
-MAUSEL_D	= 2'd3
 } mau_sel_t;
 
 `endif

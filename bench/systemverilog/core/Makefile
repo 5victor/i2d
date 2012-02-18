@@ -2,7 +2,7 @@ SRC1 = ../../../rtl/systemverilog/core
 SRC2 = .
 TOP = top.sv monitor.sv generator.sv driver.sv
 ARGS = -sverilog -debug_all +incdir+../../../rtl/systemverilog/include \
-       -y ${SRC1} -y ${SRC2} +libext+.sv
+       -y ${SRC1} -y ${SRC2} +libext+.sv -ignore all
 
 .PHONY:all
 all:	simv

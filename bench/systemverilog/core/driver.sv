@@ -59,7 +59,7 @@ function void  display_bus(virtual wishbone.pl_slave ibus,
 	ibus.cb.we, ibus.cb.dat_so, ibus.cb.ack, ibus.cb.rty, ibus.cb.err,
 	ibus.cb.stall
 	);
-	$display("dbus.cb. adr=%h dat_mo=%h sel=%0b cyc=%0d stb=%0d we=%0d dat_so=%h ack=%0d rty=%0d err=%0d stall=%0d\n",
+	$display("dbus.cb.adr=%h dat_mo=%h sel=%0b cyc=%0d stb=%0d we=%0d dat_so=%h ack=%0d rty=%0d err=%0d stall=%0d\n",
 	dbus.cb.adr, dbus.cb.dat_mo, dbus.cb.sel, dbus.cb.cyc, dbus.cb.stb,
 	dbus.cb.we, dbus.cb.dat_so, dbus.cb.ack, dbus.cb.rty, dbus.cb.err,
 	dbus.cb.stall
